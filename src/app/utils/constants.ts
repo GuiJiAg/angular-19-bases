@@ -1,3 +1,5 @@
+import { DragonballTypesCharactersEnum } from "../enums/dragonball-enums/dragonball-types-characters-enum";
+
 export class Constants {
   /* GENERICS */
   public EMPTY_TEXT: string = '';
@@ -58,6 +60,11 @@ export class Constants {
   public DBZ_ADD_FORM_INPUT_HERO_POWER_PLACEHOLDER: number = this.ZERO_NUMBER;
   public DBZ_ADD_FORM_INPUT_HERO_NAME_INIT_VALUE: string = this.EMPTY_TEXT;
   public DBZ_ADD_FORM_INPUT_HERO_POWER_INIT_VALUE: number = this.ZERO_NUMBER;
+
+  public DRAGONBALL_TYPES_CHARACTERS_ENUM = {
+    normalCharacter: DragonballTypesCharactersEnum.Normal,
+    superCharacter: DragonballTypesCharactersEnum.Super
+  };
 
   constructor() {}
 }

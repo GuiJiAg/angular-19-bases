@@ -1,31 +1,17 @@
-import { Component, signal, WritableSignal } from '@angular/core';
-import { v4 as uuidv4 } from 'uuid';
+import { Component, inject, signal, WritableSignal } from '@angular/core';
 import type { Character } from '../../models/character';
 import { DragonballCharacterListComponent } from '../../components/dragonballComponents/dragonball-character-list/dragonball-character-list.component';
 import { DragonballAddCharacterFormComponent } from "../../components/dragonballComponents/dragonball-add-character-form/dragonball-add-character-form.component";
+import { Constants } from '../../utils/constants';
+import { DragonballCharactersService } from '../../services/dragonball-services/dragonball-characters.service';
 
-const CHARACTER_LIST: Array<Character> = [
-  {
-    id: uuidv4(),
-    name: 'Goku',
-    power: 9000
-  },
-  {
-    id: uuidv4(),
-    name: 'Vegeta',
-    power: 8000
-  },
-  {
-    id: uuidv4(),
-    name: 'Yamcha',
-    power: 500
-  },
-  {
-    id: uuidv4(),
-    name: 'Piccolo',
-    power: 3000
-  }
-];
+const {
+  DRAGONBALL_TYPES_CHARACTERS_ENUM
+} = new Constants();
+
+const {
+  normalCharacter: NORMAL
+} = DRAGONBALL_TYPES_CHARACTERS_ENUM;
 
 const LIST_CHARACTERS_TITLE: string = 'Lista de personajes Dragon Ball';
 
@@ -39,14 +25,23 @@ const LIST_CHARACTERS_TITLE: string = 'Lista de personajes Dragon Ball';
   styleUrl: './dragonball-page.component.css'
 })
 export class DragonballPageComponent {
+  //INJECTS
+  private _dragonballCharacterService: DragonballCharactersService = inject(DragonballCharactersService);
+
+  //SIGNALS
   public listCharactersTitle: string = LIST_CHARACTERS_TITLE;
-  public characters: WritableSignal<Array<Character>> = signal(CHARACTER_LIST);
+  public characters: WritableSignal<Array<Character>> = signal(new Array());
+
+  ngOnInit(): void {
+    this._getCharacters();
+  }
 
   public addCharacter(newCharacter: Character): void {
-    /**
-     * Con este formato, quiere decir que, para el valor actual (currentCharacters),
-     * el cual es un Array, se le va a añadir un nuevo valor al final (newCharacter).
-     */
-    this.characters.update(currentCharacters => [...currentCharacters, newCharacter])
+    this._dragonballCharacterService.addDragonballCharacter(newCharacter, NORMAL);
+    this._getCharacters();
+  }
+
+  private _getCharacters(): void {
+    this.characters.set(this._dragonballCharacterService.getDragonballCharacters(NORMAL));
   }
 }
