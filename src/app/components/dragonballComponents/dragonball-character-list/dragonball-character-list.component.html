@@ -1,0 +1,23 @@
+<h3>{{ listCharactersTitle() }}</h3>
+<ul>
+  @for (
+    character of characters();
+    track character.id;
+    let index = $index
+  ) {
+  @if (haveCorrectPower(character.power)) {
+    <li>
+      <span>{{ index + 1 }} - {{ character.name }}</span>
+      <strong [ngClass]="powerClass(character.power)">
+        ({{ character.power }})
+      </strong>
+    </li>
+  } @else {
+    <li>
+      <span>{{ index + 1 }} - {{ character.name }}</span>
+      <strong [ngClass]="powerClass(character.power)">
+        ({{ character.power }} - Poder bajo)
+      </strong>
+    </li>
+  }}
+</ul>

@@ -1,0 +1,21 @@
+<h2>Dragon Ball Page</h2>
+<hr />
+
+<section class="row">
+
+  <div class="col-12 col-sm-6">
+    <app-dragonball-add-character-form
+      (newCharacter)="addCharacter($event)"
+    >
+    </app-dragonball-add-character-form>
+  </div>
+
+  <div class="col-12 col-sm-6">
+    <app-dragonball-character-list
+      [characters]="characters()"
+      [listCharactersTitle]="listCharactersTitle"
+    >
+    </app-dragonball-character-list>
+  </div>
+
+</section>

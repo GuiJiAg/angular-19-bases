@@ -1,0 +1,30 @@
+<h2>Counter Page</h2>
+
+<hr>
+
+<h3>Counter: {{counter}}</h3>
+<h3>Counter Signal: {{counterSignal()}}</h3>
+
+<button
+  (click)="increasesBy(addOne)"
+  >
+  {{addButtonText}}
+</button>
+
+<br>
+
+<button
+  (click)="increasesBy(subtractOne)"
+  class="mt-1"
+  >
+  {{subtractButtonText}}
+</button>
+
+<br>
+
+<button
+  (click)="resetCounter()"
+  class="mt-3"
+  >
+  {{resetCounterButtonText}}
+</button>
