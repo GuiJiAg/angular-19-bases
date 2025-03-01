@@ -1,6 +1,5 @@
-import { Injectable, signal, WritableSignal } from '@angular/core';
+import { effect, EffectRef, Injectable, signal, WritableSignal } from '@angular/core';
 import type { Character } from '../../models/character';
-import { v4 as uuidv4 } from 'uuid';
 import { Constants } from '../../utils/constants';
 import { DragonballTypesCharactersEnum } from '../../enums/dragonball-enums/dragonball-types-characters-enum';
 
@@ -13,43 +12,18 @@ const {
   superCharacter: SUPER
 } = DRAGONBALL_TYPES_CHARACTERS_ENUM;
 
-const DRAGONBALL_CHARACTERS_LIST: Array<Character> = [
-  {
-    id: uuidv4(),
-    name: 'Goku',
-    power: 9000
-  },
-  {
-    id: uuidv4(),
-    name: 'Vegeta',
-    power: 8000
-  },
-  {
-    id: uuidv4(),
-    name: 'Yamcha',
-    power: 500
-  },
-  {
-    id: uuidv4(),
-    name: 'Piccolo',
-    power: 3000
-  }
-];
-
-const DRAGONBALL_SUPER_CHARACTERS_LIST: Array<Character> = [
-  {
-    id: uuidv4(),
-    name: 'Bill',
-    power: 9000000
-  }
-]
-
 @Injectable({
   providedIn: 'root'
 })
 export class DragonballCharactersService {
-  private _normalDragonballCharacters: WritableSignal<Array<Character>> = signal(DRAGONBALL_CHARACTERS_LIST);
-  private _superDragonballSuperCharacters: WritableSignal<Array<Character>> = signal(DRAGONBALL_SUPER_CHARACTERS_LIST);
+  //SIGNALS
+  private _normalDragonballCharacters: WritableSignal<Array<Character>> = signal(this._loadDragonBallCharactersList(NORMAL));
+  private _superDragonballSuperCharacters: WritableSignal<Array<Character>> = signal(this._loadDragonBallCharactersList(SUPER));
+
+  //EFFECTS -> Cada vez que cambia un signal, se ejecutan los effects
+  private _saveCharactersInLocalStorageEffect: EffectRef = effect(() => {
+    this._saveCharactersInLocalStorage();
+  });
 
   constructor() { }
 
@@ -91,5 +65,37 @@ export class DragonballCharactersService {
      * el cual es un Array, se le va a añadir un nuevo valor al final (newCharacter).
      */
     this._superDragonballSuperCharacters.update(currentCharacters => [...currentCharacters, newCharacter]);
+  }
+
+  private _saveCharactersInLocalStorage(): void {
+    localStorage.setItem('normalDragonballCharacters', JSON.stringify(this._normalDragonballCharacters()));
+    localStorage.setItem('superDragonballSuperCharacters', JSON.stringify(this._superDragonballSuperCharacters()));
+  }
+
+  private _loadDragonBallCharactersList(typeDragonBallSuper: DragonballTypesCharactersEnum): Array<Character> {
+    switch(typeDragonBallSuper) {
+      case NORMAL:
+        return this._loadNormalDragonBallCharactersList();
+      case SUPER:
+        return this._loadSuperDragonBallCharactersList();
+      default:
+        return new Array();
+    }
+  }
+
+  private _loadNormalDragonBallCharactersList(): Array<Character> {
+    const characters = localStorage.getItem('normalDragonballCharacters');
+
+    return this._returnLocalStorageCharactersItem(characters);
+  };
+
+  private _loadSuperDragonBallCharactersList(): Array<Character> {
+    const characters = localStorage.getItem('superDragonballSuperCharacters');
+
+    return this._returnLocalStorageCharactersItem(characters);
+  };
+
+  private _returnLocalStorageCharactersItem(characters: string | null): Array<Character> {
+    return characters ? JSON.parse(characters) : new Array();
   }
 }
